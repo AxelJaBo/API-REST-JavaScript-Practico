@@ -1,8 +1,8 @@
-const URL = 'https://api.themoviedb.org/3/trending/movie/day';
+const URL = 'https://api.themoviedb.org/3';
 const API_KEY = "3986d115ade1ea3de2a8564c62071a38";
 
 async function getTrendingMovesPreview(){
-    const res = await fetch(URL+'?api_key='+API_KEY);
+    const res = await fetch(URL+'/trending/movie/day?api_key='+API_KEY);
     const data = await res.json();
 
     const movies = data.results;
@@ -22,4 +22,28 @@ async function getTrendingMovesPreview(){
     });
     console.log({data, movies});
 }
+
+async function getCategoriesPreview(){
+    const res = await fetch(URL+'/genre/movie/list?api_key='+API_KEY);
+    const data = await res.json();
+
+    const categories = data.genres;
+    categories.forEach(category => {
+        const previewCategoriesContainer = document.querySelector('#categoriesPreview .categoriesPreview-list');
+        
+        const categoryContainer = document.createElement('div');
+        categoryContainer.classList.add('category-container');
+
+        const categoryTitle = document.createElement('h3');
+        categoryTitle.classList.add('category-title');
+        categoryTitle.setAttribute('id', 'id'+category.id);
+        const categoryTitleText = document.createTextNode(category.name);
+
+        categoryTitle.appendChild(categoryTitleText);
+        categoryContainer.appendChild(categoryTitle);
+        previewCategoriesContainer.appendChild(categoryContainer);
+    });
+    console.log({data, categories});
+}
 getTrendingMovesPreview();
+getCategoriesPreview();
