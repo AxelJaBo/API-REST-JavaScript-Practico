@@ -52,5 +52,5 @@ async function getCategoriesPreview(){
     });
     console.log({data, categories});
 }
-getTrendingMovesPreview();
-getCategoriesPreview();
+// getTrendingMovesPreview();
+// getCategoriesPreview();
