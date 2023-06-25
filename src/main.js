@@ -2,7 +2,7 @@ const URL = 'https://api.themoviedb.org/3/';
 const API_KEY = "3986d115ade1ea3de2a8564c62071a38";
 const api = axios.create({
     baseURL: URL,
-    Headers:{
+    Headers: {
         'Content-Type': 'application/json;charset=utf-8',
     },
     params: {
@@ -28,16 +28,16 @@ function createMovies(
         lazyLoad = false,
         clean = true,
     } = {},
-    ){
+) {
     if (clean) {
         container.innerHTML = "";
     }
-    
+
     movies.forEach(movie => {
         const movieContainer = document.createElement('div');
         movieContainer.classList.add('movie-container');
         movieContainer.addEventListener('click', () => {
-            location.hash = 'movie='+movie.id;
+            location.hash = 'movie=' + movie.id;
         });
 
         const movieImg = document.createElement('img');
@@ -45,16 +45,16 @@ function createMovies(
         movieImg.setAttribute('alt', movie.tittle);
         movieImg.setAttribute(
             lazyLoad ? 'data-img' : 'src',
-            'https://image.tmdb.org/t/p/w300'+movie.poster_path
-            );
-        
+            'https://image.tmdb.org/t/p/w300' + movie.poster_path
+        );
+
         movieImg.addEventListener('error', () => {
             movieImg.setAttribute(
                 'src',
                 'https://static.platzi.com/static/images/error/img404.png',
             );
         });
-        
+
         if (lazyLoad) {
             lazyLoader.observe(movieImg);
         }
@@ -64,15 +64,15 @@ function createMovies(
     });
 }
 
-function createCategories(categories, container){
+function createCategories(categories, container) {
     container.innerHTML = "";
-    categories.forEach(category => {   
+    categories.forEach(category => {
         const categoryContainer = document.createElement('div');
         categoryContainer.classList.add('category-container');
 
         const categoryTitle = document.createElement('h3');
         categoryTitle.classList.add('category-title');
-        categoryTitle.setAttribute('id', 'id'+category.id);
+        categoryTitle.setAttribute('id', 'id' + category.id);
         categoryTitle.addEventListener('click', () => {
             location.hash = `#category=${category.id}-${category.name}`;
         });
@@ -85,74 +85,83 @@ function createCategories(categories, container){
 }
 
 // Llamados a la API
-async function getTrendingMoviesPreview(){
-    const {data} = await api('trending/movie/day');
+async function getTrendingMoviesPreview() {
+    const { data } = await api('trending/movie/day');
     const movies = data.results;
     createMovies(movies, trendingMoviesPreviewList, true);
-    console.log({data, movies});
+    console.log({ data, movies });
 }
 
-async function getCategoriesPreview(){
-    const {data} = await api('genre/movie/list');
+async function getCategoriesPreview() {
+    const { data } = await api('genre/movie/list');
     const categories = data.genres;
-    
+
     createCategories(categories, categoriesPreviewList);
 
-    console.log({data, categories});
+    console.log({ data, categories });
 }
 
-async function getMoviesByCategory(id){
-    const {data} = await api('discover/movie',{
+async function getMoviesByCategory(id) {
+    const { data } = await api('discover/movie', {
         params: {
             with_genres: id,
         }
     });
     const movies = data.results;
     createMovies(movies, genericSection, true);
-    console.log({data, movies});
+    console.log({ data, movies });
 }
 
-async function getMoviesBySearch(query){
-    const {data} = await api('search/movie',{
+async function getMoviesBySearch(query) {
+    const { data } = await api('search/movie', {
         params: {
             query,
         }
     });
     const movies = data.results;
     createMovies(movies, genericSection);
-    console.log({data, movies});
+    console.log({ data, movies });
 }
 
-async function getTrendingMovies(){
-    const {data} = await api('trending/movie/day');
+async function getTrendingMovies() {
+    const { data } = await api('trending/movie/day');
     const movies = data.results;
     createMovies(movies, genericSection, { lazyLoad: true, clean: true });
-    console.log({data, movies});
-    const btnLoadMore = document.createElement('button');
-    btnLoadMore.innerText = 'Carga más';
-    btnLoadMore.addEventListener('click', getPaginatedTrendingMovies);
-    genericSection.appendChild(btnLoadMore);
+    console.log({ data, movies });
+    // const btnLoadMore = document.createElement('button');
+    // btnLoadMore.innerText = 'Carga más';
+    // btnLoadMore.addEventListener('click', getPaginatedTrendingMovies);
+    // genericSection.appendChild(btnLoadMore);
 }
 
-let page = 1;
-async function getPaginatedTrendingMovies(){
-    page++;
-    const {data} = await api('trending/movie/day', 
-    {
-        params: {
-            page,
-        },
-    });
-    const movies = data.results;
-    createMovies(movies, genericSection, { lazyLoad: true, clean: false });
-    const btnLoadMore = document.createElement('button');
-    btnLoadMore.innerText = 'Carga más';
-    btnLoadMore.addEventListener('click', getPaginatedTrendingMovies);
-    genericSection.appendChild(btnLoadMore);
+async function getPaginatedTrendingMovies() {
+    const { 
+        scrollTop,
+        scrollHeight,
+        clientHeight
+    } = document.documentElement;
+
+    const scrollIsBottom = (scrollTop + clientHeight) >= (scrollHeight - 15);
+
+    if (scrollIsBottom) {
+        page++;
+        const { data } = await api('trending/movie/day',
+            {
+                params: {
+                    page,
+                },
+            });
+        const movies = data.results;
+        createMovies(movies, genericSection, { lazyLoad: true, clean: false });
+    }
+    // const btnLoadMore = document.createElement('button');
+    // btnLoadMore.innerText = 'Carga más';
+    // btnLoadMore.addEventListener('click', getPaginatedTrendingMovies);
+    // genericSection.appendChild(btnLoadMore);
 }
 
-async function getMovieById(id){
-    const {data: movie} = await api('movie/'+id);
+async function getMovieById(id) {
+    const { data: movie } = await api('movie/' + id);
 
     const movieImgUrl = 'https://image.tmdb.org/t/p/w500' + movie.poster_path;
     console.log(movie.URL);
@@ -170,11 +179,11 @@ async function getMovieById(id){
     movieDetailScore.textContent = movie.vote_average;
 
     createCategories(movie.genres, movieDetailCategoriesList);
-    console.log({movie});
+    console.log({ movie });
     getRelatedMoviesById(id);
 }
 
-async function getRelatedMoviesById(id){
+async function getRelatedMoviesById(id) {
     const { data } = await api(`movie/${id}/recommendations`);
     const realatedMovies = data.results;
 
