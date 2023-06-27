@@ -86,6 +86,7 @@ function categoriesPage(){
     headerCategoryTitle.innerHTML=categoryName;
     
     getMoviesByCategory(categoryId);
+    infiniteScroll = getPaginatedMoviesByCategory(categoryId);
 }
 
 function movieDetailPage(){
@@ -124,6 +125,7 @@ function searchPage(){
 
     const query = location.hash.split('=')[1];
     getMoviesBySearch(query);
+    infiniteScroll = getPaginatedMoviesBySearch(query);
 }
 
 function trendsPage(){
