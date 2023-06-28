@@ -1,5 +1,4 @@
 const URL = 'https://api.themoviedb.org/3/';
-const API_KEY = "3986d115ade1ea3de2a8564c62071a38";
 const api = axios.create({
     baseURL: URL,
     Headers: {
@@ -36,9 +35,6 @@ function createMovies(
     movies.forEach(movie => {
         const movieContainer = document.createElement('div');
         movieContainer.classList.add('movie-container');
-        movieContainer.addEventListener('click', () => {
-            location.hash = 'movie=' + movie.id;
-        });
 
         const movieImg = document.createElement('img');
         movieImg.classList.add('movie-img');
@@ -47,7 +43,10 @@ function createMovies(
             lazyLoad ? 'data-img' : 'src',
             'https://image.tmdb.org/t/p/w300' + movie.poster_path
         );
-
+        
+        movieImg.addEventListener('click', () => {
+            location.hash = 'movie=' + movie.id;
+        });
         movieImg.addEventListener('error', () => {
             movieImg.setAttribute(
                 'src',
@@ -55,11 +54,19 @@ function createMovies(
             );
         });
 
+        const movieBtn = document.createElement('button');
+        movieBtn.classList.add('movie-btn');
+        movieBtn.addEventListener('click', () => {
+            movieBtn.classList.toggle('movie-btn--liked');
+            //DEBERIAMOS AGREGAR LA PELICULA AL LS
+        })
+
         if (lazyLoad) {
             lazyLoader.observe(movieImg);
         }
 
         movieContainer.appendChild(movieImg);
+        movieContainer.appendChild(movieBtn);
         container.appendChild(movieContainer);
     });
 }
