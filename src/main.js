@@ -1,11 +1,12 @@
 const URL = 'https://api.themoviedb.org/3/';
+const APIKEY = process.env.API_KEY;
 const api = axios.create({
     baseURL: URL,
     Headers: {
         'Content-Type': 'application/json;charset=utf-8',
     },
     params: {
-        'api_key': process.env.API_KEY,
+        'api_key': APIKEY,
     },
 });
 
