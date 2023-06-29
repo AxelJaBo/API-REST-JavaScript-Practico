@@ -77,6 +77,7 @@ function createMovies(
 
         const movieBtn = document.createElement('button');
         movieBtn.classList.add('movie-btn');
+        likedMoviesList()[movie.id] && movieBtn.classList.add('movie-btn--liked');
         movieBtn.addEventListener('click', () => {
             movieBtn.classList.toggle('movie-btn--liked');
             likeMovie(movie);
@@ -281,4 +282,11 @@ async function getRelatedMoviesById(id) {
     const realatedMovies = data.results;
 
     createMovies(realatedMovies, relatedMoviesContainer);
+}
+
+function getLikedMovies(){
+    const likedMovies = likedMoviesList();
+    const moviesArray = Object.values(likedMovies);
+    createMovies(moviesArray, likedMoviesListArticle, { lazyLoad: true, clean: true });
+    console.log(likedMovies);
 }
