@@ -1,5 +1,6 @@
-const URL = 'https://api.themoviedb.org/3/';
+require('dotenv').config();
 const APIKEY = process.env.API_KEY;
+const URL = 'https://api.themoviedb.org/3/';
 const api = axios.create({
     baseURL: URL,
     Headers: {
