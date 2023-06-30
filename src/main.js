@@ -1,6 +1,4 @@
-import dotenv from 'dotenv';
-dotenv.config();
-const APIKEY = process.env.API_KEY;
+const APIKEY1 = process.env.API_KEY;
 const URL = 'https://api.themoviedb.org/3/';
 const api = axios.create({
     baseURL: URL,
@@ -8,7 +6,7 @@ const api = axios.create({
         'Content-Type': 'application/json;charset=utf-8',
     },
     params: {
-        'api_key': APIKEY,
+        'api_key': APIKEY1,
     },
 });
 
